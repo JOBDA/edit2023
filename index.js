@@ -1,14 +1,25 @@
 const express = require("express");
 const app = express();
+const { logger } = require("./middleware/log");
+const movies = require("./movies");
 
-app.get("/", (req, res) => {
-    res.send("ok")
-});
+// CRUD - Create Reade Update Delete
 
-app.get("/foo", (req, res) => {
-    res.send("foo")
+// REST
+// GET https://api.edit.pt/          => GET
+// Get https://api.edit.pt/movies    => GET /movies
+// Get https://api.edit.pt/directors => GET /directors
+
+app.use(express.json());
+app.use(logger);
+
+app.use("/movies", movies);
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: "internal error" });
 });
 
 app.listen(3000, () => {
-    console.log("engine started...")
+  console.log("engine started...");
 });
